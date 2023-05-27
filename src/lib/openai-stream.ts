@@ -1,4 +1,7 @@
+export type ChatGPTAgent = "user" | "system";
+
+// the data format openai expects
 export interface ChatGPTMessage {
-    role:CatGPTAgent
-    content: string
+  role: ChatGPTAgent;
+  content: string;
 }
