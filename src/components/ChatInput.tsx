@@ -6,7 +6,6 @@ import { nanoid } from "nanoid";
 import { FC, HTMLAttributes, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 
-
 interface ChatInputProps extends HTMLAttributes<HTMLDivElement> {}
 
 const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
@@ -20,7 +19,7 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ messages: "hiii" }),
+        body: JSON.stringify({messages:[message]}),
       });
       return response.body;
     },
@@ -38,15 +37,15 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
           autoFocus
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                
-                // Send message
-                const message = {
-                    id:nanoid(),
-                    isUserMessage: true,
-                    text:input
-                }
-                sendMessage(message)
+              e.preventDefault();
+
+              // Send message
+              const message = {
+                id: nanoid(),
+                isUserMessage: true,
+                text: input,
+              };
+              sendMessage(message);
             }
           }}
           onChange={(e) => setInput(e.target.value)}
