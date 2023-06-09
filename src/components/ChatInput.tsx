@@ -13,18 +13,39 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
 
   // React Queries
   const { mutate: sendMessage, isLoading } = useMutation({
-    mutationFn: async (message: Message) => {
-      const response = await fetch("/api/message", {
-        method: "POST",
+    mutationKey: ["sendMessage"],
+    mutationFn: async (_message: Message) => {
+      const response = await fetch('/api/message', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({messages:[message]}),
+        body: JSON.stringify({ message: _message }),
       });
       return response.body;
     },
-    onSuccess: () => {
-      console.log("first message sent");
+
+
+    onSuccess: async (stream) => {
+      if (!stream) throw new Error("No stream returned");
+
+      const id = nanoid();
+      const responseMessage: Message = {
+        id,
+        isUserMessage: true,
+        text: input,
+      }
+      const reader = stream.getReader();
+      const decoder = new TextDecoder();
+
+      let done = false;
+
+      while (!done) {
+        const { value, done: doneReading } = await reader.read();
+        done = doneReading;
+        const chunkValue = decoder.decode(value);
+        console.log(chunkValue);
+      }
     },
   });
 
